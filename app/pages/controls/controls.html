@@ -6,5 +6,49 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding class="controls">
+<ion-content class="controls">
+    <ion-grid>
+        <ion-row baseline center>
+            
+            <ion-col width-20 offset-20>
+                <button outline (click)="basicCommand('play')">
+                    <ion-icon name="play"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col width-20>
+                <button outline (click)="basicCommand('pause')">
+                    <ion-icon name="pause"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col width-20>
+                <button outline (click)="basicCommand('stop')">
+                    <ion-icon name="square"></ion-icon>
+                </button>
+            </ion-col>
+            
+        </ion-row>
+
+        <ion-row>
+            <ion-col width-25>
+                <button outline (click)="basicCommand('skipBackward')">
+                    <ion-icon name="skip-backward"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col width-25>
+                <button outline (click)="basicCommand('decreaseSpeed')">
+                    <ion-icon class="flip" name="fastforward"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col width-25>
+                <button outline (click)="basicCommand('increaseSpeed')">
+                    <ion-icon name="fastforward"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col width-25>
+                <button outline (click)="basicCommand('skipForward')">
+                    <ion-icon name="skip-forward"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>
