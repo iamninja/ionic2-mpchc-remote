@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Platform, ionicBootstrap} from 'ionic-angular';
+import {Platform, ionicBootstrap, NavController} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 
 import {TabsPage} from './pages/tabs/tabs';
@@ -7,7 +7,7 @@ import { MpchcService } from './services/mpchc.service';
 
 
 @Component({
-  template: '<ion-nav [root]="rootPage"></ion-nav>',
+  templateUrl: 'build/app.html',
   providers: [
       MpchcService
   ]
