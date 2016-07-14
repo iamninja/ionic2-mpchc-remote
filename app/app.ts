@@ -1,15 +1,17 @@
-import {Component} from '@angular/core';
-import {Platform, ionicBootstrap, NavController} from 'ionic-angular';
-import {StatusBar} from 'ionic-native';
+import { Component } from '@angular/core';
+import { Platform, ionicBootstrap, NavController } from 'ionic-angular';
+import { StatusBar } from 'ionic-native';
 
-import {TabsPage} from './pages/tabs/tabs';
+import { TabsPage } from './pages/tabs/tabs';
 import { MpchcService } from './services/mpchc.service';
+import { SettingsService } from './services/settings.service';
 
 
 @Component({
   templateUrl: 'build/app.html',
   providers: [
-      MpchcService
+      MpchcService,
+      SettingsService
   ]
 })
 export class MyApp {

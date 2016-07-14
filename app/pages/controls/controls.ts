@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Toast } from 'ionic-angular';
 
 import { SettingsPage } from '../settings/settings';
 import { MpchcService } from '../../services/mpchc.service';
@@ -15,11 +15,22 @@ export class ControlsPage {
 
     basicCommand(command: string) {
         this.mpchcService.basicCommand(command)
-        .then(() => console.log("Good"))
-        .catch((err) => console.log(err));
+            .then(() => console.log("Good"))
+            .catch((err) => {
+                this.showToast('Couldn\'t connect to MPC-HC. (' + <any>err + ')'); 
+            });
     }
 
     goToSettings() {
         this.navController.push(SettingsPage);
+    }
+
+    showToast(message: string) {
+        let toast = Toast.create({
+            message: message,
+            duration: 3000
+        });
+
+        this.navController.present(toast);
     }
 }

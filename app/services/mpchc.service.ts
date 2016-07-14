@@ -3,21 +3,27 @@ import { Headers, Http, Response, URLSearchParams, RequestOptionsArgs, RequestOp
 
 import 'rxjs/add/operator/toPromise';
 
+import { SettingsService } from './settings.service';
+
 @Injectable()
 export class MpchcService {
-    private mpchcUrl = 'http://localhost:13579/';
-    private mpchcCommandUrl = this.mpchcUrl + 'command.html';
+    private mpchcUrl: string;
+    private mpchcCommandUrl: string;
+    private mpchcVariablesUrl: string;
 
     private headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Access-Control-Allow-Origin': '*'
     });
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private settingsService: SettingsService) {
         this.http = http;
+        this.setUrls();
     }
 
     basicCommand(command: string): Promise<any> {
+        this.setUrls();
         let commandCode = this.getCommandCode(command);
         let params = this.createParams(commandCode);
         let options: RequestOptionsArgs = ({
@@ -25,10 +31,19 @@ export class MpchcService {
             headers: this.headers,
             search: params
         });
+        console.log(options);
         return this.http.get(this.mpchcCommandUrl, options)
             .toPromise()
             .then(this.handleResponse)
             .catch(this.handleError);
+    }
+
+    checkConfiguration(): Promise<any> {
+        this.setUrls();
+        return this.http.get(this.mpchcVariablesUrl)
+            .toPromise()
+            .then(() => 'Connected')
+            .catch(() => 'Couldn\'t connect with this configuration');
     }
 
     private createParams(commandCode: string = '-2',
@@ -72,5 +87,24 @@ export class MpchcService {
             error.status ? `${error.status} - ${error.statusText}` : 'Server error';
         console.log(errMsg);
         return Promise.reject(errMsg);
+    }
+
+    private setUrls() {
+        let configuration: any;
+        this.settingsService.getValue('configuration')
+            .then((value) => {
+                console.log('value: ' + value['ipAddress']);
+                this.mpchcUrl = 'http://' + value['ipAddress'];
+                if (value['port'] === undefined) {
+                    this.mpchcUrl += ':' + '13579';
+                } else {
+                    this.mpchcUrl += ':' + value['port'];
+                }
+                this.mpchcCommandUrl = this.mpchcUrl + '/command.html';
+                this.mpchcVariablesUrl = this.mpchcUrl + '/variables.html';
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 }

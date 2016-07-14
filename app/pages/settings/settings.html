@@ -4,16 +4,19 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding class="settings">
+<ion-content class="settings">
     <ion-list>
-        <ion-item>
-            <ion-label floating>IP Address</ion-label>
-            <ion-input type="text"></ion-input>
-        </ion-item>
-
-        <ion-item>
-            <ion-label floating>Port</ion-label>
-            <ion-input type="number"></ion-input>
-        </ion-item>
+        <ion-item-group>
+            <ion-item-divider>Configuration</ion-item-divider>
+            <ion-item>
+                <ion-label floating>IP Address or Hostname</ion-label>
+                <ion-input type="text" [(ngModel)]="ipAddress"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label floating>Port</ion-label>
+                <ion-input type="number" [(ngModel)]="port"></ion-input>
+            </ion-item>
+            <button full (click)="saveConfiguration()">Update</button>
+        </ion-item-group>
     </ion-list>
 </ion-content>
