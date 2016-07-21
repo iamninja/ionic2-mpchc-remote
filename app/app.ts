@@ -4,6 +4,7 @@ import { StatusBar } from 'ionic-native';
 
 import { TabsPage } from './pages/tabs/tabs';
 import { MpchcService } from './services/mpchc.service';
+import { MALService } from './services/mal.service';
 import { SettingsService } from './services/settings.service';
 
 
@@ -11,6 +12,7 @@ import { SettingsService } from './services/settings.service';
   templateUrl: 'build/app.html',
   providers: [
       MpchcService,
+      MALService,
       SettingsService
   ]
 })

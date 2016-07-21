@@ -18,5 +18,18 @@
             </ion-item>
             <button full (click)="saveConfiguration()">Update</button>
         </ion-item-group>
+
+        <ion-item-group>
+            <ion-item-divider>My Anime List</ion-item-divider>
+            <ion-item>
+                <ion-label floating>Username</ion-label>
+                <ion-input type="text" [(ngModel)]="malUsername"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label floating>password</ion-label>
+                <ion-input type="password" [(ngModel)]="malPassword"></ion-input>
+            </ion-item>
+            <button full (click)="saveMAL()">Update</button>
+        </ion-item-group>
     </ion-list>
 </ion-content>
