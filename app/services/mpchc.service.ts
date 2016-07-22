@@ -118,6 +118,14 @@ export class MpchcService {
                 return '895';
             case 'decreaseSpeed':
                 return '894';
+            case 'previousSubtitles':
+                return '955';
+            case 'nextSubtitles':
+                return '954';
+            case 'previousAudio':
+                return '953';
+            case 'nextAudio':
+                return '952';
         
             default:
                 return '887';

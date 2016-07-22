@@ -14,17 +14,17 @@
         <ion-row baseline center>
             
             <ion-col width-20 offset-20>
-                <button outline (click)="basicCommand('play')">
+                <button block (click)="basicCommand('play')">
                     <ion-icon name="play"></ion-icon>
                 </button>
             </ion-col>
             <ion-col width-20>
-                <button outline (click)="basicCommand('pause')">
+                <button block (click)="basicCommand('pause')">
                     <ion-icon name="pause"></ion-icon>
                 </button>
             </ion-col>
             <ion-col width-20>
-                <button outline (click)="basicCommand('stop')">
+                <button block (click)="basicCommand('stop')">
                     <ion-icon name="square"></ion-icon>
                 </button>
             </ion-col>
@@ -33,22 +33,22 @@
 
         <ion-row>
             <ion-col width-25>
-                <button outline (click)="basicCommand('skipBackward')">
+                <button block (click)="basicCommand('skipBackward')">
                     <ion-icon name="skip-backward"></ion-icon>
                 </button>
             </ion-col>
             <ion-col width-25>
-                <button outline (click)="basicCommand('decreaseSpeed')">
-                    <ion-icon class="flip" name="fastforward"></ion-icon>
+                <button block (click)="basicCommand('decreaseSpeed')">
+                    Slow
                 </button>
             </ion-col>
             <ion-col width-25>
-                <button outline (click)="basicCommand('increaseSpeed')">
-                    <ion-icon name="fastforward"></ion-icon>
+                <button block (click)="basicCommand('increaseSpeed')">
+                    Fast 
                 </button>
             </ion-col>
             <ion-col width-25>
-                <button outline (click)="basicCommand('skipForward')">
+                <button block (click)="basicCommand('skipForward')">
                     <ion-icon name="skip-forward"></ion-icon>
                 </button>
             </ion-col>
@@ -56,6 +56,33 @@
 
         <ion-row>
             <button secondary full (click)="smartSkip()">Smart Skip</button>
+        </ion-row>
+
+        <br />
+
+        <ion-row>
+            <ion-col width-50>
+                <button block (click)="basicCommand('previousSubtitle')">
+                    Previous Subtitle
+                </button>
+            </ion-col>
+            <ion-col width-50>
+                <button block (click)="basicCommand('nextSubtitle')">
+                    Next Subtitle
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <button block (click)="basicCommand('previousAudio')">
+                    Previous Audio
+                </button>
+            </ion-col>
+            <ion-col width-50>
+                <button block (click)="basicCommand('nextAudio')">
+                    Next Audio
+                </button>
+            </ion-col>
         </ion-row>
     </ion-grid>
 </ion-content>
