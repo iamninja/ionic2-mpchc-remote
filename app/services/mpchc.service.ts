@@ -4,6 +4,8 @@ import { Headers, Http, Response, URLSearchParams, RequestOptionsArgs, RequestOp
 import 'rxjs/add/operator/toPromise';
 
 import { SettingsService } from './settings.service';
+import { SecondsToTimestampPipe } from '../pipes/seconds-to-timestamp.pipe';
+import { TimestampToSecondsPipe } from '../pipes/timestamp-to-seconds.pipe';
 
 @Injectable()
 export class MpchcService {
@@ -11,14 +13,20 @@ export class MpchcService {
     private mpchcCommandUrl: string;
     private mpchcVariablesUrl: string;
 
+    public smartSkipSeconds: string;
+
     private headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Access-Control-Allow-Origin': '*'
     });
 
     constructor(private http: Http,
-                private settingsService: SettingsService) {
+                private settingsService: SettingsService,
+                private timestampToSeconds: TimestampToSecondsPipe,
+                private secondsToTimestamp: SecondsToTimestampPipe) {
         this.http = http;
+        this.timestampToSeconds = timestampToSeconds;
+        this.secondsToTimestamp = secondsToTimestamp;
         this.setUrls();
     }
 
@@ -36,6 +44,44 @@ export class MpchcService {
             .toPromise()
             .then(this.handleResponse)
             .catch(this.handleError);
+    }
+
+    customCommand(command: string, name: string, value: string): Promise<any> {
+        let params = this.createParams(command, name, value);
+        let options: RequestOptionsArgs = ({
+            url: this.mpchcCommandUrl,
+            headers: this.headers,
+            search: params
+        });
+        return this.http.get(this.mpchcCommandUrl, options)
+            .toPromise()
+            .then(this.handleResponse)
+            .catch(this.handleError)
+    }
+
+     smartSkip() {
+        this.http.get(this.mpchcVariablesUrl)
+            .toPromise()
+            .then((response) => {
+                let parser = new DOMParser();
+                let doc  = parser.parseFromString(response.text(), 'text/html');
+                let timestamp = doc.querySelectorAll('#positionstring')[0].textContent;
+                let seconds = this.timestampToSeconds.transform(timestamp);
+                seconds = seconds + parseInt(this.smartSkipSeconds);                
+                timestamp = this.secondsToTimestamp.transform(seconds);
+                this.customCommand('-1', 'position', timestamp)
+                    .then(() => {return 'skipped'})
+                    .catch(() => {console.log('fail to skip'); return 'failed to skip'});  
+            })
+            .catch((err) => {
+                return 'Couldn\'t connect to server: ' + err;
+            })
+
+    }
+
+    timeCommand(command: string, name: string, value: string) {
+        this.setUrls();
+
     }
 
     checkConfiguration(): Promise<any> {
@@ -102,6 +148,7 @@ export class MpchcService {
                 }
                 this.mpchcCommandUrl = this.mpchcUrl + '/command.html';
                 this.mpchcVariablesUrl = this.mpchcUrl + '/variables.html';
+                this.smartSkipSeconds = value['smartSkip'];
             })
             .catch((error) => {
                 console.log(error);

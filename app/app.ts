@@ -6,6 +6,8 @@ import { TabsPage } from './pages/tabs/tabs';
 import { MpchcService } from './services/mpchc.service';
 import { MALService } from './services/mal.service';
 import { SettingsService } from './services/settings.service';
+import { SecondsToTimestampPipe } from './pipes/seconds-to-timestamp.pipe';
+import { TimestampToSecondsPipe } from './pipes/timestamp-to-seconds.pipe';
 
 
 @Component({
@@ -13,7 +15,13 @@ import { SettingsService } from './services/settings.service';
   providers: [
       MpchcService,
       MALService,
-      SettingsService
+      SettingsService,
+      SecondsToTimestampPipe,
+      TimestampToSecondsPipe
+  ],
+  pipes: [
+      SecondsToTimestampPipe,
+      TimestampToSecondsPipe
   ]
 })
 export class MyApp {

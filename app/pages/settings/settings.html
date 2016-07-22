@@ -16,6 +16,10 @@
                 <ion-label floating>Port</ion-label>
                 <ion-input type="number" [(ngModel)]="port"></ion-input>
             </ion-item>
+             <ion-item>
+                <ion-label floating>Smart Skip (in seconds)</ion-label>
+                <ion-input type="number" [(ngModel)]="smartSkip"></ion-input>
+            </ion-item>
             <button full (click)="saveConfiguration()">Update</button>
         </ion-item-group>
 

@@ -11,6 +11,7 @@ import { MALService } from '../../services/mal.service';
 export class SettingsPage {
     private ipAddress: string;
     private port: number;
+    private smartSkip: number;
     private malUsername: string;
     private malPassword: string;
 
@@ -26,6 +27,7 @@ export class SettingsPage {
                 console.log(value);
                 this.ipAddress = value['ipAddress'];
                 this.port = value['port'];
+                this.smartSkip = value['smartSkip'];
             })
             .catch((error) => {
                 console.log(error);
@@ -44,7 +46,8 @@ export class SettingsPage {
     saveConfiguration() {
         let configuration = {
             'ipAddress': this.ipAddress,
-            'port': this.port
+            'port': this.port,
+            'smartSkip': this.smartSkip
         };
         this.settingsService.setValue('configuration', configuration)
             .then((value) => { 
