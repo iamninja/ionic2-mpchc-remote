@@ -11,22 +11,42 @@ import { MpchcService } from '../../services/mpchc.service';
 })
 export class ControlsPage {
     private smartSkipSeconds: number;
+    private volume: string;
 
     constructor(
-        private navController: NavController,
-        private mpchcService: MpchcService,
-        private settingsService: SettingsService) {
+            private navController: NavController,
+            private mpchcService: MpchcService,
+            private settingsService: SettingsService) {
     }
 
      onPageWillEnter() {
         this.settingsService.getValue('configuration')
             .then((value) => {
-                console.log(value);
                 this.smartSkipSeconds = value['smartSkip'];
             })
             .catch((error) => {
                 console.log(error);
             });
+        this.mpchcService.setUrls()
+            .then(() => {
+                this.mpchcService.getVariables()
+                    .then(() => {                        
+                        this.volume = this.mpchcService.variables.volumeLevel;
+                    })
+                    .catch((err) => {
+                        this.showToast('Couldn\'t connect to MPC-HC. (' + <any>err + ')');
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        
+    }
+
+    changeVolume(volume: string) {
+        this.mpchcService.customCommand('-2', 'volume', volume)
+            .then((response) => response)
+            .catch((err) => console.log(err));
     }
 
     smartSkip() {

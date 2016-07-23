@@ -20,7 +20,6 @@ export class SettingsService {
     getValue(key: string): Promise<any> {
         return this.storage.getJson(key)
             .then((value) => {
-                console.log(value); 
                 return value; 
             })
             .catch((error) => { return error; });

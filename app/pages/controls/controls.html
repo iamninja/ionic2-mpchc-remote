@@ -58,6 +58,17 @@
             <button secondary full (click)="smartSkip()">Smart Skip</button>
         </ion-row>
 
+        <ion-row>
+            <ion-col width-100>
+                <ion-item>
+                    <ion-range min="0" max="100" [(ngModel)]="volume" (ngModelChange)="changeVolume(volume)">
+                        <ion-icon range-left name="volume-mute"></ion-icon>
+                        <ion-icon range-right name="volume-up"></ion-icon>
+                    </ion-range>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+
         <br />
 
         <ion-row>

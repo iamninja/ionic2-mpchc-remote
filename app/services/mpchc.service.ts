@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, URLSearchParams, RequestOptionsArgs, RequestOptions } from '@angular/http';
 
+import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
 import { SettingsService } from './settings.service';
 import { SecondsToTimestampPipe } from '../pipes/seconds-to-timestamp.pipe';
 import { TimestampToSecondsPipe } from '../pipes/timestamp-to-seconds.pipe';
+
+export interface MpchcVariables {
+   volumeLevel: string;
+   timeString: string;
+   file: string;
+}
 
 @Injectable()
 export class MpchcService {
@@ -14,6 +21,11 @@ export class MpchcService {
     private mpchcVariablesUrl: string;
 
     public smartSkipSeconds: string;
+    public variables: MpchcVariables = {
+        volumeLevel: '',
+        timeString: '',
+        file: ''
+    };
 
     private headers = new Headers({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -31,7 +43,9 @@ export class MpchcService {
     }
 
     basicCommand(command: string): Promise<any> {
-        this.setUrls();
+        this.setUrls()
+        .then()
+        .catch();
         let commandCode = this.getCommandCode(command);
         let params = this.createParams(commandCode);
         let options: RequestOptionsArgs = ({
@@ -84,12 +98,65 @@ export class MpchcService {
 
     }
 
+    updateVolume(volume: string) {
+        let params = this.createParams('-2', 'volume', volume);
+        let options: RequestOptionsArgs = ({
+            url: this.mpchcCommandUrl,
+            headers: this.headers,
+            search: params
+        });
+        return this.http
+            .post(this.mpchcCommandUrl, options)
+            .toPromise()
+            .then((response) => this.handleResponse)
+            .catch((err) => this.handleError)
+    }
+
     checkConfiguration(): Promise<any> {
-        this.setUrls();
+        return this.setUrls()
+            .then(() => {
+                this.http.get(this.mpchcVariablesUrl)
+                    .toPromise()
+                    .then(() => 'Connected')
+                    .catch(() => 'Couldn\'t connect with this configuration');
+            })
+            .catch(() => {
+                return 'Couldn\'t connect';
+            })
+    }
+
+    getVariables(): Promise<any> {
         return this.http.get(this.mpchcVariablesUrl)
             .toPromise()
-            .then(() => 'Connected')
-            .catch(() => 'Couldn\'t connect with this configuration');
+            .then((response) => {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(response.text(), 'text/html');
+
+                this.variables.volumeLevel = doc.querySelectorAll('#volumelevel')[0].textContent;                        
+                this.variables.timeString = doc.querySelectorAll('#positionstring')[0].textContent;                        
+                this.variables.file = doc.querySelectorAll('#file')[0].textContent;    
+            })
+            .catch((response) => 'Couldn\'t connect with this configuration')
+    }
+
+    setUrls(): Promise<any> {
+        let configuration: any;
+        return this.settingsService.getValue('configuration')
+            .then((value) => {
+                // console.log('value: ' + value['ipAddress']);
+                this.mpchcUrl = 'http://' + value['ipAddress'];
+                if (value['port'] === undefined) {
+                    this.mpchcUrl += ':' + '13579';
+                } else {
+                    this.mpchcUrl += ':' + value['port'];
+                }
+                this.mpchcCommandUrl = this.mpchcUrl + '/command.html';
+                this.mpchcVariablesUrl = this.mpchcUrl + '/variables.html';
+                this.smartSkipSeconds = value['smartSkip'];
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     private createParams(commandCode: string = '-2',
@@ -98,7 +165,7 @@ export class MpchcService {
         let params = new URLSearchParams();
         params.append('wm_command', commandCode);
         params.append(extra_name, extra_value);
-        console.log(params);
+        // console.log(params);
         return params;
     }
 
@@ -141,25 +208,5 @@ export class MpchcService {
             error.status ? `${error.status} - ${error.statusText}` : 'Server error';
         console.log(errMsg);
         return Promise.reject(errMsg);
-    }
-
-    private setUrls() {
-        let configuration: any;
-        this.settingsService.getValue('configuration')
-            .then((value) => {
-                console.log('value: ' + value['ipAddress']);
-                this.mpchcUrl = 'http://' + value['ipAddress'];
-                if (value['port'] === undefined) {
-                    this.mpchcUrl += ':' + '13579';
-                } else {
-                    this.mpchcUrl += ':' + value['port'];
-                }
-                this.mpchcCommandUrl = this.mpchcUrl + '/command.html';
-                this.mpchcVariablesUrl = this.mpchcUrl + '/variables.html';
-                this.smartSkipSeconds = value['smartSkip'];
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }
 }
