@@ -14,6 +14,11 @@ export interface MpchcVariables {
    file: string;
 }
 
+export interface TitleAndEpisode {
+    title: string;
+    episode: string;
+}
+
 @Injectable()
 export class MpchcService {
     private mpchcUrl: string;
@@ -25,6 +30,10 @@ export class MpchcService {
         volumeLevel: '',
         timeString: '',
         file: ''
+    };
+    public titleAndEpisode: TitleAndEpisode = {
+        title: '',
+        episode: ''
     };
 
     private headers = new Headers({
@@ -134,7 +143,8 @@ export class MpchcService {
 
                 this.variables.volumeLevel = doc.querySelectorAll('#volumelevel')[0].textContent;                        
                 this.variables.timeString = doc.querySelectorAll('#positionstring')[0].textContent;                        
-                this.variables.file = doc.querySelectorAll('#file')[0].textContent;    
+                this.variables.file = doc.querySelectorAll('#file')[0].textContent;
+                this.setTitleAndEpisode(this.variables.file);    
             })
             .catch((response) => 'Couldn\'t connect with this configuration')
     }
@@ -157,6 +167,14 @@ export class MpchcService {
             .catch((error) => {
                 console.log(error);
             });
+    }
+
+    setTitleAndEpisode(filename: string) {
+        filename = filename.replace(/(\[.*?\]|\(.*?\)) */g, "");
+        filename = filename.substr(0, filename.lastIndexOf('.')) || filename;
+        filename = filename.replace(/_/g, " ").trim();
+        this.titleAndEpisode.title = filename.substr(0, filename.lastIndexOf('-')).trim() || filename;
+        this.titleAndEpisode.episode = filename.substr(filename.lastIndexOf('-') + 1, filename.length).trim() || "";
     }
 
     private createParams(commandCode: string = '-2',
