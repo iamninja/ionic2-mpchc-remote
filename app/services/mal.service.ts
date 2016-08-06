@@ -5,18 +5,27 @@ import 'rxjs/add/operator/toPromise';
 
 import { SettingsService } from './settings.service';
 
+export interface MALUser {
+    username: string;
+    password: string;
+    valid: boolean;
+}
+
 @Injectable()
 export class MALService {
     private malUrl = 'http://myanimelist.net/api/';
-    private username: string;
-    private password: string;
+    public user: MALUser = {
+        username: '',
+        password: '',
+        valid: false
+    }
 
     constructor(private http: Http,
                 private settingsService: SettingsService) {
         this.http = http;
     }
 
-    checkCredentials(username = this.username, password = this.password) {
+    checkCredentials(username = this.user.username, password = this.user.password) {
         let headers = this.createAuthorizationHeader(username, password);
         console.log(headers);
         let checkUrl = this.malUrl + 'account/verify_credentials.xml';
@@ -26,8 +35,10 @@ export class MALService {
         .toPromise()
         .then((response) => {
             if (response.status == 200) {
+                this.user.valid = true;
                 return 'Connected as, ' + username;
             } else {
+                this.user.valid = false;
                 return 'Couldn\'t connect.';
             }
         })
@@ -42,8 +53,8 @@ export class MALService {
         this.settingsService.getValue('malConfiguration')
             .then((value) => {
                 console.log('value: ' + value['username']);
-                this.username = value['username'];
-                this.password = value['password'];
+                this.user.username = value['username'];
+                this.user.password = value['password'];
             })
             .catch((error) => {
                 console.log(error);

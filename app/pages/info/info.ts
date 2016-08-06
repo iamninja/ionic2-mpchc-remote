@@ -3,6 +3,7 @@ import { NavController, Toast } from 'ionic-angular';
 
 import { SettingsPage } from '../settings/settings';
 import { MpchcService } from '../../services/mpchc.service';
+import { HummingbirdService } from '../../services/hummingbird.service';
 
 @Component({
     templateUrl: 'build/pages/info/info.html'
@@ -10,10 +11,18 @@ import { MpchcService } from '../../services/mpchc.service';
 export class InfoPage {
     public title: string;
     public episode: string;
+    public id: number;
+    public currentlyPlaying = {
+        id: 0,
+        anime: {
+            anime: {}
+        }
+    };
 
     constructor(
         private navController: NavController,
-        private mpchcService: MpchcService) { }
+        private mpchcService: MpchcService,
+        private hummingbirdService: HummingbirdService) { }
 
     onPageWillEnter() {
         this.mpchcService.setUrls()
@@ -30,6 +39,19 @@ export class InfoPage {
             .catch((err) => {
                 console.log(err);
             })
+        this.hummingbirdService.getCurrentlyPlayingID('bleach')
+            .then((id) => {
+                this.id = id;
+                this.hummingbirdService.getAnimeObject(id)
+                    .then(() => {
+                        this.currentlyPlaying = this.hummingbirdService.currentlyPlaying;
+                    })
+                    .catch((err) => this.showToast('Couldn\'t find anime. (' + <any>err + ')'))
+            })
+            .then((err) => {
+                this.showToast('Couldn\'t find anime. (' + <any>err + ')');
+            });
+
     }
 
     goToSettings() {
