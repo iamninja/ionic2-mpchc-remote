@@ -21,9 +21,9 @@ export interface TitleAndEpisode {
 
 @Injectable()
 export class MpchcService {
-    private mpchcUrl: string;
-    private mpchcCommandUrl: string;
-    private mpchcVariablesUrl: string;
+    public mpchcUrl: string;
+    public mpchcCommandUrl: string;
+    public mpchcVariablesUrl: string;
 
     public smartSkipSeconds: string;
     public variables: MpchcVariables = {
@@ -121,13 +121,22 @@ export class MpchcService {
             .catch((err) => this.handleError)
     }
 
+
     checkConfiguration(): Promise<any> {
         return this.setUrls()
             .then(() => {
                 this.http.get(this.mpchcVariablesUrl)
                     .toPromise()
-                    .then(() => 'Connected')
-                    .catch(() => 'Couldn\'t connect with this configuration');
+                    .then((res) => {
+                        console.log("3");
+                        
+                        return 'Connected';
+                    })
+                    .catch((err) => {
+                        console.log("4");
+                        
+                        return 'Couldn\'t connect with this configuration';
+                    });
             })
             .catch(() => {
                 return 'Couldn\'t connect';

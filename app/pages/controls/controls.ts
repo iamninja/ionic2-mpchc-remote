@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import { NavController, Toast } from 'ionic-angular';
 
 import { SettingsPage } from '../settings/settings';
@@ -10,13 +12,17 @@ import { MpchcService } from '../../services/mpchc.service';
     templateUrl: 'build/pages/controls/controls.html'
 })
 export class ControlsPage {
+    private volumeData: Observable<any>;
+    private volumeObserver: MutationObserver;
     private smartSkipSeconds: number;
     private volume: string;
 
     constructor(
+            private http: Http,
             private navController: NavController,
             private mpchcService: MpchcService,
             private settingsService: SettingsService) {
+        this.volumeData = new Observable(observer => this.volumeObserver = observer);
     }
 
      onPageWillEnter() {
@@ -44,9 +50,16 @@ export class ControlsPage {
     }
 
     changeVolume(volume: string) {
-        this.mpchcService.customCommand('-2', 'volume', volume)
-            .then((response) => response)
-            .catch((err) => console.log(err));
+        // this.mpchcService.customCommand('-2', 'volume', volume)
+        //     .then((response) => response)
+        //     .catch((err) => console.log(err));
+        this.http.get(this.mpchcService.mpchcCommandUrl + '?wm_command=-2&volume=' + volume)
+            .map((response) => {
+
+            })
+            .subscribe(result => {
+               
+            }, err => { console.log('failed'); });
     }
 
     smartSkip() {
