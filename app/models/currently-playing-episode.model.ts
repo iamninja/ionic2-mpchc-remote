@@ -11,7 +11,7 @@ export class CurrentlyPlayingEpisode {
 
     constructor(id: number) {
         this.id = id;
-        this.anime = new HummingbirdAnime({});
+        this.anime = new HummingbirdAnime();
         this.episode = new HummingbirdAnimeEpisode();
         this.images = [];
     }

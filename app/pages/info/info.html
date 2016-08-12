@@ -10,19 +10,46 @@
 </ion-header>
 
 <ion-content padding class="info">
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>app/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
-  <p>
-      {{title}}
-      {{episode}}
-      <br>
-      {{currentlyPlaying.anime.anime.synopsis}}
-  </p>
+    <div *ngIf="currentlyPlaying">
+    <ion-card class="cover-image"
+        *ngIf="currentlyPlaying.anime.cover_image != '/cover_images/thumb/missing.png'">
+        <img src="{{ currentlyPlaying.anime.cover_image }}"/>
+        <div class="card-title">{{ currentlyPlaying.anime.titles.canonical }}</div>
+        <div class="card-subtitle">{{ currentlyPlaying.anime.episode_count }} Episodes</div>
+    </ion-card>
+    <ion-card class="cover-no-image"
+        *ngIf= "currentlyPlaying.anime.cover_image == '/cover_images/thumb/missing.png' || !currentlyPlaying.anime.cover_image">
+        <div class="card-title">{{ currentlyPlaying.anime.titles.canonical }}</div>
+        <div class="card-subtitle">{{ currentlyPlaying.anime.episode_count }} Episodes</div>
+    </ion-card>
+    <ion-card>
+        <ion-item>
+            <h1>{{ currentlyPlaying.anime.titles.canonical }}</h1>
+            <div class="genres">
+                <ion-badge item-right *ngFor="let genre of generateArray(currentlyPlaying.anime.genres)">
+                    {{ genre }}
+                </ion-badge>
+            </div>
+        </ion-item>
+        <ion-card-content>
+            <p><span>Started airing: </span>{{ currentlyPlaying.anime.started_airing_date }}</p>
+            <p><span>Finished airing: </span>{{ currentlyPlaying.anime.finished_airing_date }}</p>
+            <p><span>Episodes: </span>{{ currentlyPlaying.anime.episode_count }}</p>
+            <p><span>Episode Length: </span>{{ currentlyPlaying.anime.episode_length }}</p>
+            <p><span>Synopsis: </span>{{ currentlyPlaying.anime.synopsis }}</p>
+        </ion-card-content>      
+    </ion-card>
+    <div *ngIf="currentlyPlayingEpisode">
+    <ion-card>
+        <ion-item>
+            <h2>Season: {{ currentlyPlayingEpisode.season_number || '??' }} - Episode: {{ currentlyPlayingEpisode.number || '??' }}</h2>
+            <h3>{{ currentlyPlayingEpisode.title }}</h3>
+        </ion-item>
+        <ion-card-content>
+            <p><span>Airdate: </span>{{ currentlyPlayingEpisode.airdate || 'N/A' }}</p>
+            <p><span>Synopsis: </span>{{ currentlyPlayingEpisode.synopsis || 'N/A' }}</p>
+        </ion-card-content>     
+    </ion-card>
+    </div>
+    </div>
 </ion-content>

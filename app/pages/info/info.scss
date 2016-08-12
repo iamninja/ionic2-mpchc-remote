@@ -1,2 +1,41 @@
 .info {
+    ion-card {
+        position: relative;
+    }
+
+    .cover-no-image {
+        background-color: #333;
+        width: 100%;
+        height: 30%;
+        display: block;
+    }
+
+    .card-title {
+        position: absolute;
+        top: 36%;
+        font-size: 2.0em;
+        width: 100%;
+        font-weight: bold;
+        color: #fff;
+        text-align: center;
+    }
+
+    .card-subtitle {
+        font-size: 1.0em;
+        position: absolute;
+        top: 52%;
+        width: 100%;
+        color: #fff;
+        text-align: center;
+    }
+
+    .poster-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .genres {
+        display: block;
+        overflow: hidden;
+    }
 }

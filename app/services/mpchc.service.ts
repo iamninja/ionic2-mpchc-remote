@@ -153,7 +153,8 @@ export class MpchcService {
                 this.variables.volumeLevel = doc.querySelectorAll('#volumelevel')[0].textContent;                        
                 this.variables.timeString = doc.querySelectorAll('#positionstring')[0].textContent;                        
                 this.variables.file = doc.querySelectorAll('#file')[0].textContent;
-                this.setTitleAndEpisode(this.variables.file);    
+                this.setTitleAndEpisode(this.variables.file);
+                console.log(this.titleAndEpisode);    
             })
             .catch((response) => 'Couldn\'t connect with this configuration')
     }

@@ -1,3 +1,6 @@
+import { HummingbirdAnimeEpisode } from './hummingbird-anime-episode.model';
+import { HummingbirdGalleryImage } from './hummingbird-gallery-image.model';
+
 export class HummingbirdAnime {
     anime: {
         id: number;
@@ -25,9 +28,16 @@ export class HummingbirdAnime {
             gallery_images: number[];
             episodes: number[];
         };
+
     }
 
-    constructor (response: any) {
-        this.anime = response.anime;
+    linked: {
+        episodes: HummingbirdAnimeEpisode[];
+        gallery_images: HummingbirdGalleryImage[];
+
     }
+
+    // constructor (response: any) {
+    //     this.anime = response.anime;
+    // }
 }

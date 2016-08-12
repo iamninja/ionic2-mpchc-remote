@@ -25,9 +25,9 @@ export class SettingsPage {
         this.settingsService.getValue('configuration')
             .then((value) => {
                 console.log(value);
-                this.ipAddress = value['ipAddress'];
-                this.port = value['port'];
-                this.smartSkip = value['smartSkip'];
+                this.ipAddress = value['ipAddress'] || "192.168.1.1";
+                this.port = value['port'] || "13579";
+                this.smartSkip = value['smartSkip'] || "89";
             })
             .catch((error) => {
                 console.log(error);
@@ -53,8 +53,14 @@ export class SettingsPage {
             .then((value) => { 
                 this.showToast('Configuration updated.');
                 this.mpchcService.checkConfiguration()
-                    .then((msg) => this.showToast(msg))
-                    .catch((msg) => this.showToast(msg));
+                    .then((msg) => {
+                        console.log("1" + msg);
+                        this.showToast(msg);
+                    })
+                    .catch((msg) => {
+                        console.log("2");
+                        this.showToast(msg);
+                    });
             })
             .catch((error) => {
                 this.showToast('Unable to save configuration.');
