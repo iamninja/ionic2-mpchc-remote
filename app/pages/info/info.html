@@ -26,7 +26,7 @@
         <ion-item>
             <h1>{{ currentlyPlaying.anime.titles.canonical }}</h1>
             <div class="genres">
-                <ion-badge item-right *ngFor="let genre of generateArray(currentlyPlaying.anime.genres)">
+                <ion-badge class="genre" item-right *ngFor="let genre of generateArray(currentlyPlaying.anime.genres)">
                     {{ genre }}
                 </ion-badge>
             </div>
