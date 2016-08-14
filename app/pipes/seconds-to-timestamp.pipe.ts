@@ -9,6 +9,10 @@ export class SecondsToTimestampPipe implements PipeTransform {
         seconds = seconds % (60 * 60);
         let minutes = Math.floor(seconds / 60);
         seconds = seconds % 60;
-        return hours + ":" + minutes + ":" + seconds;
+        return this.pad(hours) + ":" + this.pad(minutes) + ":" + this.pad(seconds);
+    }
+
+    pad(number: number): string {
+        return (number < 10) ? '0' + number.toString() : number.toString();
     }
 }

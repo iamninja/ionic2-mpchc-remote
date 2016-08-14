@@ -54,10 +54,24 @@
             </ion-col>
         </ion-row>
 
+        <br>
+        <ion-row>
+            <ion-col width-100>
+                <ion-item>
+                    <ion-range min="0" max="{{variables.durationString | timestampToSeconds}}" [(ngModel)]="currentSecond" (ngModelChange)="changePosition(currentSecond)">
+                        <span range-left>{{ variables.timeString || '00:00:00' }}</span>
+                        <span range-right>{{ variables.durationString || '00:00:00' }}</span>
+                    </ion-range>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <br />
+
         <ion-row>
             <button secondary full (click)="smartSkip()">Smart Skip</button>
         </ion-row>
 
+        <br>
         <ion-row>
             <ion-col width-100>
                 <ion-item>
@@ -68,7 +82,6 @@
                 </ion-item>
             </ion-col>
         </ion-row>
-
         <br />
 
         <ion-row>

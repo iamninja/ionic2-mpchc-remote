@@ -9,9 +9,12 @@ import { SecondsToTimestampPipe } from '../pipes/seconds-to-timestamp.pipe';
 import { TimestampToSecondsPipe } from '../pipes/timestamp-to-seconds.pipe';
 
 export interface MpchcVariables {
-   volumeLevel: string;
-   timeString: string;
-   file: string;
+    state: number;
+    volumeLevel: string;
+    timeString: string;
+    durationString: string;
+    file: string;
+    connected: boolean;
 }
 
 export interface TitleAndEpisode {
@@ -27,9 +30,12 @@ export class MpchcService {
 
     public smartSkipSeconds: string;
     public variables: MpchcVariables = {
+        state: 0,
         volumeLevel: '',
         timeString: '',
-        file: ''
+        durationString: '',
+        file: '',
+        connected: false
     };
     public titleAndEpisode: TitleAndEpisode = {
         title: '',
@@ -86,24 +92,22 @@ export class MpchcService {
         this.http.get(this.mpchcVariablesUrl)
             .toPromise()
             .then((response) => {
+                // Create the timestamp for the new position
                 let parser = new DOMParser();
                 let doc  = parser.parseFromString(response.text(), 'text/html');
                 let timestamp = doc.querySelectorAll('#positionstring')[0].textContent;
                 let seconds = this.timestampToSeconds.transform(timestamp);
                 seconds = seconds + parseInt(this.smartSkipSeconds);                
                 timestamp = this.secondsToTimestamp.transform(seconds);
+                // Make the skip
                 this.customCommand('-1', 'position', timestamp)
-                    .then(() => {return 'skipped'})
-                    .catch(() => {console.log('fail to skip'); return 'failed to skip'});  
+                    .then(() => 'skipped')
+                    .catch(() => 'failed to skip');
+            
             })
             .catch((err) => {
                 return 'Couldn\'t connect to server: ' + err;
             })
-
-    }
-
-    timeCommand(command: string, name: string, value: string) {
-        this.setUrls();
 
     }
 
@@ -127,14 +131,10 @@ export class MpchcService {
             .then(() => {
                 this.http.get(this.mpchcVariablesUrl)
                     .toPromise()
-                    .then((res) => {
-                        console.log("3");
-                        
+                    .then((res) => {                        
                         return 'Connected';
                     })
-                    .catch((err) => {
-                        console.log("4");
-                        
+                    .catch((err) => {                        
                         return 'Couldn\'t connect with this configuration';
                     });
             })
@@ -147,16 +147,28 @@ export class MpchcService {
         return this.http.get(this.mpchcVariablesUrl)
             .toPromise()
             .then((response) => {
+                if (response.status != 200) {
+                    this.variables.connected = false;
+                    return response;
+                }
+                this.variables.connected = true;
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(response.text(), 'text/html');
 
+                this.variables.state = parseInt(doc.querySelectorAll('#state')[0].textContent);
                 this.variables.volumeLevel = doc.querySelectorAll('#volumelevel')[0].textContent;                        
-                this.variables.timeString = doc.querySelectorAll('#positionstring')[0].textContent;                        
+                this.variables.timeString = doc.querySelectorAll('#positionstring')[0].textContent;
+                this.variables.durationString = doc.querySelectorAll('#durationstring')[0].textContent;                        
                 this.variables.file = doc.querySelectorAll('#file')[0].textContent;
                 this.setTitleAndEpisode(this.variables.file);
                 console.log(this.titleAndEpisode);    
             })
-            .catch((response) => 'Couldn\'t connect with this configuration')
+            .catch((response) => {
+                this.variables.connected = false;
+                console.log('cant connect');
+                
+                return 'Couldn\'t connect with this configuration'
+            })
     }
 
     setUrls(): Promise<any> {

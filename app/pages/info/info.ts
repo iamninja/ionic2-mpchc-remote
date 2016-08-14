@@ -17,6 +17,7 @@ export class InfoPage {
     public title: string;
     public episode: string;
     public id: number;
+    public poll: any;
 
     public currentlyPlaying: HummingbirdAnime;
     public currentlyPlayingEpisode: HummingbirdAnimeEpisode;
@@ -28,7 +29,7 @@ export class InfoPage {
         // this.currentlyPlaying = new HummingbirdAnime();
     }
 
-    onPageWillEnter() {
+    ionViewWillEnter() {
         this.mpchcService.setUrls()
             .then(() => {
                 this.mpchcService.getVariables()
@@ -43,7 +44,7 @@ export class InfoPage {
             .catch((err) => {
                 console.log(err);
             });
-            Observable.interval(10000)
+            this.poll = Observable.interval(10000)
             .mergeMap(() => this.mpchcService.getVariables()
                             .then(() => {
                                 this.title = this.mpchcService.titleAndEpisode.title;
@@ -52,6 +53,7 @@ export class InfoPage {
                             .catch((err) => {
                                 this.showToast('Couldn\'t connect to MPC-HC. (' + <any>err + ')');
                             }))
+            .skipWhile(() => !this.mpchcService.variables.connected)
             .mergeMap(() => this.hummingbirdService.getCurrentlyPlayingID(this.title))
             .subscribe(
                 (id) => {
@@ -70,6 +72,10 @@ export class InfoPage {
                     this.showToast('Couldn\'t find anime. (' + <any>err + ')');
                 }
             );
+    }
+
+    ionViewWillLeave() {
+        this.poll.unsubscribe();
     }
 
     generateArray(obj){
