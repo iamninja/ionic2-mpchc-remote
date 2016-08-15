@@ -11,6 +11,11 @@
 
 <ion-content class="controls">
     <ion-grid>
+        <ion-row *ngIf="!variables.connected">
+            <div class="connected">
+                Not Connected
+            </div>
+        </ion-row>
         <ion-row baseline center>
             
             <ion-col width-20 offset-20>

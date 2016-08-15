@@ -161,13 +161,14 @@ export class MpchcService {
                 this.variables.durationString = doc.querySelectorAll('#durationstring')[0].textContent;                        
                 this.variables.file = doc.querySelectorAll('#file')[0].textContent;
                 this.setTitleAndEpisode(this.variables.file);
-                console.log(this.titleAndEpisode);    
+                console.log(this.titleAndEpisode);
+                return response;    
             })
-            .catch((response) => {
+            .catch((err) => {
                 this.variables.connected = false;
                 console.log('cant connect');
-                
-                return 'Couldn\'t connect with this configuration'
+                return err;
+                // return 'Couldn\'t connect with this configuration'
             })
     }
 

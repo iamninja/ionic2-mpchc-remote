@@ -69,10 +69,12 @@ export class ControlsPage {
         this.mpchcService.setUrls()
             .then(() => {
                 this.mpchcService.getVariables()
-                    .then(() => {                        
+                    .then(() => {
                         this.volume = this.mpchcService.variables.volumeLevel;
                     })
                     .catch((err) => {
+                        console.log('looog');
+                        
                         this.showToast('Couldn\'t connect to MPC-HC. (' + <any>err + ')');
                     });
             })
@@ -81,7 +83,11 @@ export class ControlsPage {
             })
         this.poll = Observable.interval(5000)
             .mergeMap(() => this.mpchcService.getVariables()
-                            .then(() => {
+                            .then((response) => {
+                                if (response.status != 200) {
+                                    this.variables.connected = false;
+                                }
+                                
                                 this.variables = this.mpchcService.variables;
                             })
                             .catch((err) => {
@@ -116,6 +122,9 @@ export class ControlsPage {
     }
 
     changeVolume(volume: string) {
+        if (!this.variables.connected) {
+            return;
+        }
         // this.mpchcService.customCommand('-2', 'volume', volume)
         //     .then((response) => response)
         //     .catch((err) => console.log(err));
@@ -129,6 +138,9 @@ export class ControlsPage {
     }
 
     changePosition(seconds) {
+        if (!this.variables.connected) {
+            return;
+        }
         let timestamp = this.secondsToTimestamp.transform(seconds);
         this.mpchcService.customCommand('-1', 'position', timestamp)
             .then((response) => {
@@ -140,12 +152,18 @@ export class ControlsPage {
     }
 
     smartSkip() {
+        if (!this.variables.connected) {
+            return;
+        }
         this.mpchcService.smartSkip();
         this.currentSecond += parseInt(this.mpchcService.smartSkipSeconds);
         this.variables.timeString = this.secondsToTimestamp.transform(this.currentSecond);
     }
 
     basicCommand(command: string) {
+        if (!this.variables.connected) {
+            return;
+        }
         switch (command) {
             case 'pause':
                 this.timer.unsubscribe();
