@@ -9,6 +9,15 @@ import { HummingbirdService } from '../../services/hummingbird.service';
 import { HummingbirdAnime } from '../../models/hummingbird-anime.model';
 import { HummingbirdAnimeEpisode } from '../../models/hummingbird-anime-episode.model';
 
+export interface MpchcVariables {
+    state: number;
+    volumeLevel: string;
+    timeString: string;
+    durationString: string;
+    file: string;
+    connected: boolean;
+}
+
 @Component({
     templateUrl: 'build/pages/info/info.html'
 })
@@ -18,6 +27,15 @@ export class InfoPage {
     public episode: string;
     public id: number;
     public poll: any;
+
+    public variables: MpchcVariables = {
+        state: 0,
+        volumeLevel: '',
+        timeString: '00:00:00',
+        durationString: '00:00:00',
+        file: '',
+        connected: false
+    };
 
     public currentlyPlaying: HummingbirdAnime;
     public currentlyPlayingEpisode: HummingbirdAnimeEpisode;
@@ -46,11 +64,16 @@ export class InfoPage {
             });
             this.poll = Observable.interval(10000)
             .mergeMap(() => this.mpchcService.getVariables()
-                            .then(() => {
+                            .then((response) => {
+                                if (response.status != 200) {
+                                    this.variables.connected = false;
+                                }
+                                this.variables = this.mpchcService.variables;
                                 this.title = this.mpchcService.titleAndEpisode.title;
                                 this.episode = this.mpchcService.titleAndEpisode.episode;
                             })
                             .catch((err) => {
+                                this.variables.connected = false;
                                 this.showToast('Couldn\'t connect to MPC-HC. (' + <any>err + ')');
                             }))
             .skipWhile(() => !this.mpchcService.variables.connected)
@@ -58,7 +81,8 @@ export class InfoPage {
             .subscribe(
                 (id) => {
                     this.id = id;
-                    this.hummingbirdService.getAnimeObjectV2(id)
+                    if (this.variables.connected) {
+                        this.hummingbirdService.getAnimeObjectV2(id)
                         .subscribe((res) => {
                             this.currentlyPlaying = res;
                             console.log(this.currentlyPlaying);
@@ -66,10 +90,13 @@ export class InfoPage {
                         },
                         (error) => {
                             this.showToast('Couldn\'t find anime. (' + <any>error + ')');
-                        })
+                        });
+                    };
+                    
                 },
                 (err) => {
-                    this.showToast('Couldn\'t find anime. (' + <any>err + ')');
+                    this.variables.connected = false;
+                    this.showToast('Couldn\'t connect. (' + <any>err + ')');
                 }
             );
     }

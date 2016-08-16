@@ -91,6 +91,7 @@ export class ControlsPage {
                                 this.variables = this.mpchcService.variables;
                             })
                             .catch((err) => {
+                                this.variables.connected = false;
                                 this.showToast('Couldn\'t connect to MPC-HC. (' + <any>err + ')');
                             }))
             .skipWhile(() => !this.mpchcService.variables.connected)

@@ -32,8 +32,8 @@ export class MpchcService {
     public variables: MpchcVariables = {
         state: 0,
         volumeLevel: '',
-        timeString: '',
-        durationString: '',
+        timeString: '00:00:00',
+        durationString: '00:00:00',
         file: '',
         connected: false
     };

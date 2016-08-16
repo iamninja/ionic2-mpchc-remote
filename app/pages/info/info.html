@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content padding class="info">
-    <div *ngIf="currentlyPlaying">
+    <div *ngIf="currentlyPlaying && variables.connected">
     <ion-card class="cover-image"
         *ngIf="currentlyPlaying.anime.cover_image != '/cover_images/thumb/missing.png'">
         <img src="{{ currentlyPlaying.anime.cover_image }}"/>
@@ -51,5 +51,15 @@
         </ion-card-content>     
     </ion-card>
     </div>
+    </div>
+
+    <div *ngIf="!variables.connected">
+        <ion-grid>
+            <ion-row>
+                <div class="connected">
+                    Not Connected
+                </div>
+            </ion-row>
+        </ion-grid>
     </div>
 </ion-content>
