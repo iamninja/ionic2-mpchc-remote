@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage, SqlStorage } from 'ionic-angular';
-
-import 'rxjs/add/operator/toPromise';
-
+ 
 @Injectable()
 export class SettingsService {
     private storage: Storage;

@@ -200,6 +200,51 @@ export class MpchcService {
         this.titleAndEpisode.episode = filename.substr(filename.lastIndexOf('-') + 1, filename.length).trim() || "";
     }
 
+    getDirectory(path: string = null) {
+        let url: string;
+        if (path) {
+            url = this.mpchcUrl + '/browser.html?path=' + path;
+        } else {
+            url = this.mpchcUrl + '/browser.html';
+        }
+        return this.http.get(url)
+            .toPromise()
+            .then((response) => {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(response.text(), 'text/html');
+                let result = new Array();
+                
+                let location = doc.querySelector('.text-center').textContent.trim();
+                result.push(location.substr(location.indexOf(':') + 1).trim())
+                let rows = doc.querySelectorAll('table')[1].querySelectorAll('tr');
+                for (var i = 1; i < rows.length; i++) {
+                    let cells = rows[i].querySelectorAll('td')
+                    let name = cells[0].textContent.trim();
+                    let type: string;
+                    if (name.endsWith('.mkv') || name.endsWith('.avi') || name.endsWith('.mp4')) {
+                        type = 'film';
+                    } else if (cells[1].textContent.trim() == 'Directory') {
+                        type = 'folder'
+                    } else {
+                        type = 'document';
+                    }
+                    let size = cells[2].textContent.trim();
+                    let date_modified = cells[3].textContent.trim();
+                    
+                    let item = {
+                        name: name,
+                        type: type,
+                        size: size,
+                        date_modified: date_modified
+                    };
+                    result.push(item);
+                }
+
+                return result;
+            })
+            .catch((err) => { });
+    }
+
     private createParams(commandCode: string = '-2',
                          extra_name: string = 'null', 
                          extra_value: string = '0'): URLSearchParams {

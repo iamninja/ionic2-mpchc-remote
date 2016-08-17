@@ -9,12 +9,13 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content class="controls">
-  <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
-    <ion-item>
-      <ion-icon name="browse" item-left></ion-icon>
-      @ionicframework
+<ion-content class="browse">
+  <ion-list *ngIf="browseArray">
+    <ion-item-divider light>{{ location }}</ion-item-divider>
+    <ion-item *ngFor="let item of browseArray" (click)="goToPath(item.name)">
+        <ion-icon name="{{ item.type }}" item-left></ion-icon>
+        <h2>{{ item.name }}</h2>
+        <p *ngIf="item.type != 'folder'">{{ item.size }} • {{ item.date_modified }}</p>
     </ion-item>
   </ion-list>
 </ion-content>
