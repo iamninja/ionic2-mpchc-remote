@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { NavController, Toast } from 'ionic-angular';
@@ -25,7 +25,7 @@ export interface MpchcVariables {
         TimestampToSecondsPipe
     ]
 })
-export class ControlsPage {
+export class ControlsPage implements OnDestroy {
     private volumeData: Observable<any>;
     private volumeObserver: MutationObserver;
     private smartSkipSeconds: number;
@@ -54,6 +54,15 @@ export class ControlsPage {
         this.volumeData = new Observable(observer => this.volumeObserver = observer);
         this.timestampToSeconds = timestampToSeconds;
         this.secondsToTimestamp = secondsToTimestamp;
+    }
+
+    ngOnDestroy() {
+        if (this.poll) {
+            this.poll.unsubscribe();
+        }
+        if (this.timer) {
+            this.timer.unsubscribe();
+        }
     }
 
     ionViewWillEnter() {
@@ -118,6 +127,11 @@ export class ControlsPage {
     }
 
     ionViewWillLeave() {
+        this.poll.unsubscribe();
+        this.timer.unsubscribe();
+    }
+
+    ionViewWillUnload() {
         this.poll.unsubscribe();
         this.timer.unsubscribe();
     }

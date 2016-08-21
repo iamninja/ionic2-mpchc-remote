@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NavController, Toast } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
 
@@ -21,13 +21,12 @@ export interface MpchcVariables {
 @Component({
     templateUrl: 'build/pages/info/info.html'
 })
-export class InfoPage {
+export class InfoPage implements OnDestroy {
 
     public title: string;
     public episode: string;
     public id: number;
     public poll: any;
-
     public variables: MpchcVariables = {
         state: 0,
         volumeLevel: '',
@@ -36,15 +35,21 @@ export class InfoPage {
         file: '',
         connected: false
     };
-
     public currentlyPlaying: HummingbirdAnime;
     public currentlyPlayingEpisode: HummingbirdAnimeEpisode;
+
     constructor(
             private navController: NavController,
             private mpchcService: MpchcService,
             private hummingbirdService: HummingbirdService) { 
         
         // this.currentlyPlaying = new HummingbirdAnime();
+    }
+
+    ngOnDestroy() {
+        if (this.poll) {
+            this.poll.unsubscribe();
+        }
     }
 
     ionViewWillEnter() {
@@ -102,6 +107,10 @@ export class InfoPage {
     }
 
     ionViewWillLeave() {
+        this.poll.unsubscribe();
+    }
+
+    ionViewWillUnload() {
         this.poll.unsubscribe();
     }
 

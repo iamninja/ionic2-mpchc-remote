@@ -3,16 +3,21 @@
         <ion-title>Menu</ion-title>
     </ion-toolbar>
 
-    <ion-content>
+    <ion-content no-scroll>
         <ion-list>
-            <!-- remember the `this.pages` object we created in `app.js`?
-            // Iterate through, then when clicked, run the associated function
-            // passing in the #p item. -->
-            <button ion-item *ngFor="let page of pages" (click)="openPage(page)">
-                {{page.title}}
+            <button ion-item *ngFor="let page of mainPages" (click)="openPage(page)">
+                {{ page.title }}
             </button>
         </ion-list>
     </ion-content>
+
+    <ion-footer-bar>
+        <ion-list>
+            <button ion-item *ngFor="let page of otherPages" (click)="openPage(page)">
+                {{ page.title }}
+            </button>
+        </ion-list>
+    </ion-footer-bar>
 </ion-menu>
 
 

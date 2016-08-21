@@ -14,3 +14,9 @@
 @import "../pages/browse/browse";
 
 @import "../pages/settings/settings";
+
+// Global Sass
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none;
+}
