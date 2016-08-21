@@ -4,7 +4,7 @@ import { StatusBar } from 'ionic-native';
 
 import './rxjs-operators';
 
-import { TabsPage } from './pages/tabs/tabs';
+import { RemoteTabsPage } from './pages/remote-tabs/remote-tabs';
 import { MpchcService } from './services/mpchc.service';
 import { MALService } from './services/mal.service';
 import { HummingbirdService } from './services/hummingbird.service';
@@ -33,7 +33,7 @@ export class MyApp {
   private rootPage:any;
 
   constructor(private platform:Platform) {
-    this.rootPage = TabsPage;
+    this.rootPage = RemoteTabsPage;
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

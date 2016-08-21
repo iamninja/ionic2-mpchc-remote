@@ -4,9 +4,9 @@ import {ControlsPage} from '../controls/controls';
 import {BrowsePage} from '../browse/browse';
 
 @Component({
-  templateUrl: 'build/pages/tabs/tabs.html'
+  templateUrl: 'build/pages/remote-tabs/remote-tabs.html'
 })
-export class TabsPage {
+export class RemoteTabsPage {
 
   private infoTab: any;
   private controlsTab: any;
