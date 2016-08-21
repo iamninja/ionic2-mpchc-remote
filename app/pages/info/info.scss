@@ -3,13 +3,7 @@
         position: relative;
     }
 
-    .cover-no-image {
-        background-color: #333;
-        height: 200px;
-    }
-
     .card-title {
-        position: relative;
         top: 36%;
         font-size: 2.0em;
         width: 100%;
@@ -20,11 +14,33 @@
 
     .card-subtitle {
         font-size: 1.0em;
-        position: relative;
         top: 52%;
         width: 100%;
         color: #fff;
         text-align: center;
+    }
+
+    .cover-image {
+        .card-title {
+            position: absolute;
+        }
+
+        .card-subtitle {
+            position: absolute;
+        }
+    }
+
+    .cover-no-image {
+        background-color: #333;
+        height: 200px;
+
+        .card-title {
+            position: relative;
+        }
+
+        .card-subtitle {
+            position: relative;
+        }
     }
 
     .poster-image {
