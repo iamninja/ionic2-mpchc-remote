@@ -14,6 +14,8 @@ export class SettingsPage {
     private smartSkip: number;
     private malUsername: string;
     private malPassword: string;
+    private hummUsername: string;
+    private hummPassword: string;
 
     constructor(private navController: NavController,
                 public settingsService: SettingsService,
@@ -37,6 +39,15 @@ export class SettingsPage {
                 console.log(value);
                 this.malUsername = value['username'];
                 this.malPassword = value['password'];
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        this.settingsService.getValue('hummConfiguration')
+            .then((value) => {
+                console.log(value);
+                this.hummUsername = value['username'];
+                this.hummPassword = value['password'];
             })
             .catch((error) => {
                 console.log(error);
@@ -80,6 +91,21 @@ export class SettingsPage {
                 this.malService.checkCredentials(this.malUsername, this.malPassword)
                     .then((msg) => this.showToast(msg))
                     .catch((msg) => this.showToast(msg));
+            })
+            .catch((error) => {
+                this.showToast('Unable to save configuration.');
+                console.log(error);
+            });
+    }
+
+    saveHUMM() {
+        let hummConfiguration = {
+            'username': this.hummUsername,
+            'password': this.hummPassword
+        };
+        this.settingsService.setValue('hummConfiguration', hummConfiguration)
+            .then((value) => { 
+                this.showToast('Configuration updated.');
             })
             .catch((error) => {
                 this.showToast('Unable to save configuration.');

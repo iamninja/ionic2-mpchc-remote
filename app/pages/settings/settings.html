@@ -24,6 +24,19 @@
         </ion-item-group>
 
         <ion-item-group>
+            <ion-item-divider>Hummingbird</ion-item-divider>
+            <ion-item>
+                <ion-label floating>Username</ion-label>
+                <ion-input type="text" [(ngModel)]="hummUsername"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label floating>password</ion-label>
+                <ion-input type="password" [(ngModel)]="hummPassword"></ion-input>
+            </ion-item>
+            <button full (click)="saveHUMM()">Update</button>
+        </ion-item-group>
+
+        <ion-item-group>
             <ion-item-divider>My Anime List</ion-item-divider>
             <ion-item>
                 <ion-label floating>Username</ion-label>
