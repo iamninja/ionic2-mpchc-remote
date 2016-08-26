@@ -263,6 +263,8 @@ export class MpchcService {
                 return '888';
             case 'stop':
                 return '890';
+            case 'fullscreen':
+                return '831';
             case 'skipForward':
                 return '922';
             case 'skipBackward':

@@ -10,12 +10,21 @@
 </ion-header>
 
 <ion-content class="browse">
-  <ion-list *ngIf="browseArray">
-    <ion-item-divider light>{{ location }}</ion-item-divider>
-    <ion-item *ngFor="let item of browseArray" (click)="goToPath(item.name)">
-        <ion-icon name="{{ item.type }}" item-left></ion-icon>
-        <h2>{{ item.name }}</h2>
-        <p *ngIf="item.type != 'folder'">{{ item.size }} • {{ item.date_modified }}</p>
-    </ion-item>
-  </ion-list>
+    <div *ngIf="!browseArray">
+        <ion-grid>
+            <ion-row>
+                <div class="connected">
+                    Not Connected
+                </div>
+            </ion-row>
+        </ion-grid>
+    </div>
+    <ion-list *ngIf="browseArray">
+        <ion-item-divider light>{{ location }}</ion-item-divider>
+        <ion-item *ngFor="let item of browseArray" (click)="goToPath(item.name)">
+            <ion-icon name="{{ item.type }}" item-left></ion-icon>
+            <h2>{{ item.name }}</h2>
+            <p *ngIf="item.type != 'folder'">{{ item.size }} • {{ item.date_modified }}</p>
+        </ion-item>
+    </ion-list>
 </ion-content>
